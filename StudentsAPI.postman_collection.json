@@ -1,0 +1,310 @@
+{
+	"info": {
+		"_postman_id": "53c753ba-4b21-4733-be25-bc7abc5ad27d",
+		"name": "StudentsAPI",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "GetAllStudents",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "36e76108-7845-4077-886a-4706fce73354",
+						"exec": [
+							"var first = pm.variables.get(\"firstName\");",
+							"var last = pm.variables.get(\"lastName\");",
+							"var exists = false;",
+							"",
+							"console.warn(\"TEST: firstName: \" + first + \" | lastName: \" + last);",
+							"",
+							"pm.test(\"Checking if firstName \" + first + \" and lastName \" + last + \" DONT exist\", function(){",
+							"    _.each(pm.response.json(), (arrayItem) => {",
+							"        if(arrayItem.firstName === first && arrayItem.lastName === last){",
+							"            exists = true;",
+							"        }",
+							"    })",
+							"    if(exists){",
+							"    throw new Error(\"Array contains email: \" + testEmail);",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://tla-school-api.herokuapp.com/api/school/resources/students",
+					"protocol": "https",
+					"host": [
+						"tla-school-api",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"api",
+						"school",
+						"resources",
+						"students"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CreateStudent",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "cbaa4928-4c7d-494d-b3ca-0ceaaf53b7d3",
+						"exec": [
+							"pm.test(\"TEST status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.collectionVariables.set(\"studentID\", pm.response.json()._id)"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"firstName\": \"{{firstName}}\",\n\t\"lastName\": \"{{lastName}}\",\n\t\"batch\": 2\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://tla-school-api.herokuapp.com/api/school/resources/students",
+					"protocol": "https",
+					"host": [
+						"tla-school-api",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"api",
+						"school",
+						"resources",
+						"students"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UpdateStudent",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "4cc70b35-deac-4076-8f4a-6c2e7a79e23b",
+						"exec": [
+							"pm.test(\"TEST status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"firstName\": \"{{firstName}}\",\n\t\"lastName\": \"{{lastName}}\",\n\t\"batch\": 200,\n\t\"address\": {\n            \"streetAddress\": \"222 street\",\n            \"city\": \"Washington\",\n            \"state\": \"DC\",\n            \"zip\": 20002\n        },\n        \"jobStatus\": {\n            \"places\": \"yes\",\n            \"company\": \"Google\",\n            \"location\": \"Arlington\"\n        }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://tla-school-api.herokuapp.com/api/school/resources/students/{{studentID}}?key=d03e989018msh7f4691c614e87a9p1a8181j",
+					"protocol": "https",
+					"host": [
+						"tla-school-api",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"api",
+						"school",
+						"resources",
+						"students",
+						"{{studentID}}"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "d03e989018msh7f4691c614e87a9p1a8181j"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ConfirmChanges",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "847bf6a3-861a-498c-80cd-8139b14baacd",
+						"exec": [
+							"pm.test(\"TEST status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"TEST: batch values has changed to 200\", function(){",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData[0].batch).to.eql(200);",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"firstName\": \"{{firstName}}\",\n\t\"lastName\": \"{{lastName}}\",\n\t\"batch\": 200,\n\t\"address\": {\n            \"streetAddress\": \"222 street\",\n            \"city\": \"Washington\",\n            \"state\": \"DC\",\n            \"zip\": 20002\n        },\n        \"jobStatus\": {\n            \"places\": \"yes\",\n            \"company\": \"Google\",\n            \"location\": \"Arlington\"\n        }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://tla-school-api.herokuapp.com/api/school/resources/students/{{studentID}}",
+					"protocol": "https",
+					"host": [
+						"tla-school-api",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"api",
+						"school",
+						"resources",
+						"students",
+						"{{studentID}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DeleteStudent",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "6cb01bc7-c533-4a0f-b9d9-31e07bcfee5d",
+						"exec": [
+							"pm.test(\"TEST status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"TEST: batch values has changed to 200\", function(){",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.deletedCount).to.eql(1);",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "https://tla-school-api.herokuapp.com/api/school/resources/students/{{studentID}}?key=d03e989018msh7f4691c614e87a9p1a8181j",
+					"protocol": "https",
+					"host": [
+						"tla-school-api",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"api",
+						"school",
+						"resources",
+						"students",
+						"{{studentID}}"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "d03e989018msh7f4691c614e87a9p1a8181j"
+						},
+						{
+							"key": "",
+							"value": "",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "2a291fc9-df34-4c9c-96fb-a81b58057f8f",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "8c72dea7-b4de-4c0d-97c8-87271c3a660e",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "3d004cec-c5d1-427d-9b5a-6583d128f147",
+			"key": "firstName",
+			"value": "Donald"
+		},
+		{
+			"id": "8c5da92a-0e90-4003-b857-880ca991f5ee",
+			"key": "lastName",
+			"value": "Duck"
+		},
+		{
+			"id": "3a6ea06c-ecec-443a-bf3b-64f7224b6b16",
+			"key": "studentID",
+			"value": "5f67a7c76c91e700178a82bc"
+		}
+	],
+	"protocolProfileBehavior": {}
+}
